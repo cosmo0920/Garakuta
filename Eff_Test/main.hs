@@ -16,6 +16,7 @@ main = do
   showLift
   showState
   showCoroutine
+  showException
 
 showReader :: IO ()
 showReader = do
@@ -59,6 +60,13 @@ showCoroutine = do
   putStrLn "--Eff.Coroutine--"
   c1 >> c2
 
+showException :: IO ()
+showException = do
+  putStrLn "--Eff.Exception--"
+  let ev  = ter1
+      ev2 = ter2
+  putStrLn $ show ev
+  putStrLn $ show ev2
 {- Reader -}
 t1 :: Member (Reader Int) r => Eff r Int
 t1 = do v <- getReader
@@ -149,3 +157,21 @@ c2 :: IO ()
 c2 = runTrace (loop =<< runC thf)
  where loop (Y x k) = trace (show (x::Float)) >> k () >>= loop
        loop Done    = trace "Done"
+
+{- Exception -}
+-- exceptions and state
+incr :: Member (State Int) r => Eff r ()
+incr = getState >>= putState . (+ (1::Int))
+
+tes1 :: (Member (State Int) r, Member (Exc [Char]) r) => Eff r b
+tes1 = do
+  incr
+  throwExc "exc"
+
+ter1 :: (Int, Either String String)
+ter1 = run $ runState (1::Int) (runExc tes1)
+-- (2, Left "exc")
+
+ter2 :: Either String (Int, String)
+ter2 = run $ runExc (runState (1::Int) tes1)
+-- Left "exc"
