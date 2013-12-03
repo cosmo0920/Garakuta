@@ -6,6 +6,7 @@ import Control.Eff.Coroutine
 import Control.Eff.Cut
 import Control.Eff.Lift
 import Control.Eff.Trace
+import Control.Eff.Fresh
 import Control.Monad
 
 main :: IO ()
@@ -17,6 +18,7 @@ main = do
   showState
   showCoroutine
   showException
+  showFresh
 
 showReader :: IO ()
 showReader = do
@@ -67,6 +69,12 @@ showException = do
       ev2 = ter2
   putStrLn $ show ev
   putStrLn $ show ev2
+
+showFresh :: IO ()
+showFresh = do
+  putStrLn "--Eff.Fresh--"
+  tfreshr
+
 {- Reader -}
 t1 :: Member (Reader Int) r => Eff r Int
 t1 = do v <- getReader
@@ -113,7 +121,7 @@ tcut3 = call tcut1 `mplus'` call (tcut2 `mplus'` cutfalse)
 tcut3r :: [Int]
 tcut3r = run . runChoice $ call tcut3
 -- [1,2,1,2,5]
-{- Lifting -}
+{- Lift -}
 tl1 :: (Member (Lift IO) r, Member (Reader Int) r) => Eff r ()
 tl1 = getReader >>= \(x::Int) -> lift . print $ x
 
@@ -175,3 +183,17 @@ ter1 = run $ runState (1::Int) (runExc tes1)
 ter2 :: Either String (Int, String)
 ter2 = run $ runExc (runState (1::Int) tes1)
 -- Left "exc"
+
+{- Fresh -}
+tfresh :: Member Trace r => Eff r ()
+tfresh = flip runFresh (f 0) $ do
+  (n1::Int) <- fresh
+  trace $ "Fresh " ++ show n1
+  (n2::Int) <- fresh
+  trace $ "Fresh " ++ show n2
+    where
+      f :: Int -> Int
+      f a = a
+
+tfreshr :: IO ()
+tfreshr = runTrace tfresh
