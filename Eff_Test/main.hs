@@ -61,6 +61,7 @@ showCoroutine :: IO ()
 showCoroutine = do
   putStrLn "--Eff.Coroutine--"
   c1 >> c2
+  cM
 
 showException :: IO ()
 showException = do
@@ -164,6 +165,14 @@ c1 = runTrace (loop =<< runC th1)
 c2 :: IO ()
 c2 = runTrace (loop =<< runC thf)
  where loop (Y x k) = trace (show (x::Float)) >> k () >>= loop
+       loop Done    = trace "Done"
+
+thM :: (Member (Yield Int) r) => Eff r ()
+thM = mapM_ yield [1, 2, 3, 4, 5::Int]
+
+cM :: IO ()
+cM = runTrace (loop =<< runC thM)
+ where loop (Y x k) = trace (show (x::Int)) >> k () >>= loop
        loop Done    = trace "Done"
 
 {- Exception -}
