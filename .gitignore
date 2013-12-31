@@ -3,3 +3,6 @@ cabal-dev/
 *.swp
 setting.yml
 *.DS_Store
+.shelly
+.cabal-sandbox
+*.sandbox.config
