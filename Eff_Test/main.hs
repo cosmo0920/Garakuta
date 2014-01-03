@@ -1,5 +1,6 @@
 import Control.Eff
-import Control.Eff.State
+import Control.Eff.Reader.Lazy
+import Control.Eff.State.Lazy
 import Control.Eff.Exception
 import Control.Eff.Choose
 import Control.Eff.Coroutine
@@ -78,7 +79,7 @@ showFresh = do
 
 {- Reader -}
 t1 :: Member (Reader Int) r => Eff r Int
-t1 = do v <- getReader
+t1 = do v <- ask
         return (v + 1:: Int)
 
 t1r :: Eff r Int
@@ -123,8 +124,8 @@ tcut3r :: [Int]
 tcut3r = run . runChoice $ call tcut3
 -- [1,2,1,2,5]
 {- Lift -}
-tl1 :: (Member (Lift IO) r, Member (Reader Int) r) => Eff r ()
-tl1 = getReader >>= \(x::Int) -> lift . print $ x
+tl1 :: (SetMember Lift (Lift IO) r, Member (Reader Int) r) => Eff r ()
+tl1 = ask >>= \(x::Int) -> lift . print $ x
 
 tl1r :: IO ()
 tl1r = runLift (runReader tl1 (5::Int))
@@ -133,8 +134,8 @@ tl1r = runLift (runReader tl1 (5::Int))
 {- State -}
 ts1 :: Member (State Int) r => Eff r Int
 ts1 = do
-  putState (10 ::Int)
-  x <- getState
+  put (10 ::Int)
+  x <- get
   return (x::Int)
 
 ts1r :: (Int, Int)
@@ -142,10 +143,10 @@ ts1r = run $ runState (0::Int) ts1
 
 ts2 :: Member (State Int) r => Eff r Int
 ts2 = do
-  putState (10::Int)
-  x <- getState
-  putState (20::Int)
-  y <- getState
+  put (10::Int)
+  x <- get
+  put (20::Int)
+  y <- get
   return (x+y)
 
 ts2r :: (Int, Int)
@@ -159,26 +160,26 @@ thf = yield (1.0::Float) >> yield (2.0::Float)
 
 c1 :: IO ()
 c1 = runTrace (loop =<< runC th1)
- where loop (Y x k) = trace (show (x::Int)) >> k () >>= loop
-       loop Done    = trace "Done"
+ where loop (Y x k)  = trace (show (x::Int)) >> k () >>= loop
+       loop (Done _) = trace "Done"
 
 c2 :: IO ()
 c2 = runTrace (loop =<< runC thf)
- where loop (Y x k) = trace (show (x::Float)) >> k () >>= loop
-       loop Done    = trace "Done"
+ where loop (Y x k)  = trace (show (x::Float)) >> k () >>= loop
+       loop (Done _) = trace "Done"
 
 thM :: (Member (Yield Int) r) => Eff r ()
 thM = mapM_ yield [1, 2, 3, 4, 5::Int]
 
 cM :: IO ()
 cM = runTrace (loop =<< runC thM)
- where loop (Y x k) = trace (show (x::Int)) >> k () >>= loop
-       loop Done    = trace "Done"
+ where loop (Y x k)  = trace (show (x::Int)) >> k () >>= loop
+       loop (Done _) = trace "Done"
 
 {- Exception -}
 -- exceptions and state
 incr :: Member (State Int) r => Eff r ()
-incr = getState >>= putState . (+ (1::Int))
+incr = get >>= put . (+ (1::Int))
 
 tes1 :: (Member (State Int) r, Member (Exc [Char]) r) => Eff r b
 tes1 = do
