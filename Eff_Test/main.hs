@@ -1,6 +1,7 @@
 import Control.Eff
 import Control.Eff.Reader.Lazy
 import Control.Eff.State.Lazy
+import Control.Eff.Writer.Strict
 import Control.Eff.Exception
 import Control.Eff.Choose
 import Control.Eff.Coroutine
@@ -8,6 +9,7 @@ import Control.Eff.Cut
 import Control.Eff.Lift
 import Control.Eff.Trace
 import Control.Eff.Fresh
+import Control.Eff.Fail
 import Control.Monad
 
 main :: IO ()
@@ -20,6 +22,7 @@ main = do
   showCoroutine
   showException
   showFresh
+  showFail
 
 showReader :: IO ()
 showReader = do
@@ -76,6 +79,12 @@ showFresh :: IO ()
 showFresh = do
   putStrLn "--Eff.Fresh--"
   tfreshr
+
+showFail :: IO ()
+showFail = do
+  putStrLn "--Eff.Fail--"
+  ef <- tfailr
+  putStrLn $ show ef
 
 {- Reader -}
 t1 :: Member (Reader Int) r => Eff r Int
@@ -207,3 +216,21 @@ tfresh = flip runFresh (f 0) $ do
 
 tfreshr :: IO ()
 tfreshr = runTrace tfresh
+
+{- Fail & Writer.Strict -}
+tfail :: (Member (Writer Int) r, Member Fail r) => Eff r Int
+tfail = do
+  tell (1 :: Int)
+  tell (2 :: Int)
+  tell (3 :: Int)
+  die
+  tell (4 :: Int)
+  return (5 :: Int)
+
+tfailr :: Monad m => m Int
+tfailr = do
+  let go :: Eff (Fail :> Writer Int :> ()) Int -> Int -- for 1.3, Fail -> Exc ()
+      go = fst . run . runWriter (+) 0 . ignoreFail
+      ret = go $ do
+        tfail
+  return ret
