@@ -6,3 +6,27 @@ setting.yml
 .shelly
 .cabal-sandbox
 *.sandbox.config
+
+#for Scala
+*.class
+*.log
+
+# sbt specific
+.cache/
+.history/
+.lib/
+.idea/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.idea_modules
+
+# settings
+conf.properties
