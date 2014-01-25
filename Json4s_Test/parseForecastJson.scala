@@ -10,7 +10,9 @@ class parseForecastJson {
     val time = publishTime(json)
     val forecast = forecastInfo(json)
     val description = descriptionInfo(json)
+    val temp = tempInfo(json)
     println(time)
+    println(temp)
     println(forecast)
     println(description)
   }
@@ -24,6 +26,25 @@ class parseForecastJson {
   def locationInfo(json: JValue): String = {
     val JString(location) = json\ "location" \"city"
     location
+  }
+
+  def maxTemp(json: JValue): String = {
+    json\ "forecasts"\ "temperature"\ "max"\ "celsius" match {
+      case JString(maxTemp) => maxTemp
+      case _                => "No Info."
+    }
+  }
+
+  def minTemp(json: JValue): String = {
+    json\ "forecasts"\ "temperature"\ "min"\ "celsius" match {
+      case JString(minTemp) => minTemp
+      case _                => "No Info."
+    }
+  }
+
+  def tempInfo(json: JValue): String = {
+    val info = "最高気温は" + maxTemp(json) + "最低気温は" + minTemp(json)
+    info
   }
 
   def forecastInfo(json: JValue): String = {
