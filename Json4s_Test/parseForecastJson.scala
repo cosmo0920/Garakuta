@@ -43,7 +43,7 @@ class parseForecastJson {
   }
 
   def tempInfo(json: JValue): String = {
-    val info = "最高気温は" + maxTemp(json) + "最低気温は" + minTemp(json)
+    val info = "最高気温は" + maxTemp(json) + "℃ 最低気温は" + minTemp(json) + "℃"
     info
   }
 
