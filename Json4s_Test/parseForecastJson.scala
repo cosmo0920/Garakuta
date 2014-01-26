@@ -49,9 +49,28 @@ class parseForecastJson {
 
   def forecastInfo(json: JValue): String = {
     val location = locationInfo(json)
-    val JArray(List(JString(today), JString(tomorrow))) = json\ "forecasts"\ "dateLabel"
-    val JArray(List(JString(todayf), JString(tomorrowf))) = json\ "forecasts"\ "telop"
+    val today = parseDay(json, 0)
+    val tomorrow = parseDay(json, 1)
+
+    val todayf = parseForecast(json, 0)
+    val tomorrowf = parseForecast(json, 1)
     val forecast = "簡易予報: " + location + "の" + today + "、" + tomorrow + "の天気は" + todayf + "、" + tomorrowf + "です。"
+    forecast
+  }
+
+  def parseDay(json: JValue, int: Integer): String = {
+    val day = (json\ "forecasts"\ "dateLabel")(int) match {
+      case JString(value) => value
+      case _              => "No Info."
+    }
+    day
+  }
+
+  def parseForecast(json: JValue, int: Integer): String = {
+    val forecast = (json\ "forecasts"\ "telop")(int) match {
+      case JString(value) => value
+      case _              => "No Info."
+    }
     forecast
   }
 
