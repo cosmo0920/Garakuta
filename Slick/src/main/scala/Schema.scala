@@ -7,7 +7,7 @@ object Data extends Table[Datum]("data") {
   def id = column[Int]("id", O PrimaryKey, O AutoInc)
   def name = column[String]("name")
   def * = id ~ name <> (Datum.apply _, Datum.unapply _)
-  def ins = name returning id
+  def ins = name returning id // SQLite allows only a single AutoInc column to be returned from an INSERT.
 }
 
 trait DefaultSQLiteConnection {
