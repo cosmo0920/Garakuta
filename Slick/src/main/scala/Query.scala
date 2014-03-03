@@ -8,17 +8,17 @@ object DBQuery extends DefaultSQLiteConnection  {
   import Database.threadLocalSession
   def setup {
     db withSession {
-      Data.insert(Datum(1,"test"))
-      Data.insert(Datum(2,"test2"))
-      Data.insert(Datum(3,"hoge"))
-      Data.insert(Datum(4,"fuga"))
-      Data.insert(Datum(5,"piyo"))
+      Data.ins.insert("test")
+      Data.ins.insert("test2")
+      Data.ins.insert("hoge")
+      Data.ins.insert("fuga")
+      Data.ins.insert("piyo")
     }
   }
 
   def display {
     db withSession {
-      //// print
+      // print
       val q = for (c <- Data) yield ConstColumn("") ++
         c.id.asColumnOf[String] ++
         " " ++
@@ -39,7 +39,7 @@ object DBQuery extends DefaultSQLiteConnection  {
     db withSession {
       val wlist = Query(Data)
         .filter(_.id <= 3)
-        .map(row => (row.id, row.name)) //.firstOption
+        .map(row => (row.id, row.name)) //.firstOption if it wants to get first value only
       for (c <- wlist)
         println(c)
     }
@@ -47,7 +47,7 @@ object DBQuery extends DefaultSQLiteConnection  {
 
   def createTable {
     db withSession {
-      //// create data table
+      // create data table
       try {
         Data.ddl.drop
       } catch {
