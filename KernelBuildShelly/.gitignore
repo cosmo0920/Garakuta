@@ -1,0 +1,8 @@
+dist*
+cabal-dev/
+*.swp
+setting.yml
+*.DS_Store
+.cabal-sandbox/
+.shelly/
+cabal.sandbox.config
