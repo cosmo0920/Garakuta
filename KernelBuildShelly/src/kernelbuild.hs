@@ -28,6 +28,6 @@ run_grep :: Text -> [Text] -> Sh Text
 run_grep option args = do
   run "grep" (option:args)
 
-run_fakeroot:: Text -> [Text] -> Sh Text
+run_fakeroot :: Text -> [Text] -> Sh Text
 run_fakeroot option args = do
   run "fakeroot" (option:args)
