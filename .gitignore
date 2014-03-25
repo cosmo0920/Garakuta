@@ -10,6 +10,8 @@ setting.yml
 #for Scala
 *.class
 *.log
+target/
+tmp/
 
 # sbt specific
 .cache/
