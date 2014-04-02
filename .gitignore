@@ -6,6 +6,7 @@ setting.yml
 .shelly
 .cabal-sandbox
 *.sandbox.config
+*.ann
 
 #for Scala
 *.class
