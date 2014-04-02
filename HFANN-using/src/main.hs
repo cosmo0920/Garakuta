@@ -19,7 +19,15 @@ main = do
     -- a symmetric one
     setActivationFunctionHidden fann activationSigmoidSymmetric
     setActivationFunctionOutput fann activationSigmoidSymmetric
-
+    algorithm <- getTrainingAlgorithm fann
+    putStrLn $ show algorithm
+    {-|
+      trainIncremental = 0
+      trainBatch       = 1
+      trainRPROP       = 2
+      trainQuickProp   = 3
+     -}
+    setTrainingAlgorithm fann trainQuickProp
     -- Train the ANN on the data from file \'or.data\'
     -- \'or.data'\ is OR gate input/output data
     let desired_error      = 0.001
