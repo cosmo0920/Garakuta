@@ -27,7 +27,13 @@ main = do
         epochBetweenReport = 1000
         learningrate       = 0.7
     setLearningRate fann learningrate
-    trainOnFile fann "or.data" maxEpochs epochBetweenReport desired_error
+    dataPtr <- loadTrainData "or.data"
+    let mininumBound = 0.0
+        maximumBound = 1.0
+    scaleInputTrainData dataPtr mininumBound maximumBound
+    trainOnData fann dataPtr maxEpochs epochBetweenReport desired_error
+    -- or using trainOnFile
+    -- trainOnFile fann "or.data" maxEpochs epochBetweenReport desired_error
     mse <- getMSE fann
     putStrLn $ "MSE: " ++ show mse
 
