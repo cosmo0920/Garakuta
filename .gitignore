@@ -33,3 +33,8 @@ project/plugins/project/
 
 # settings
 conf.properties
+
+# for C#
+packages/
+bin/
+obj/
