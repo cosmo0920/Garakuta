@@ -38,3 +38,8 @@ conf.properties
 packages/
 bin/
 obj/
+
+# for Ruby
+
+.bundle/
+vendor/

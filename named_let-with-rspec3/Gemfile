@@ -1,0 +1,5 @@
+source "http://rubygems.org"
+
+# Specify your gem's dependencies in named_let.gemspec
+gem 'rspec'
+gem 'named_let'
