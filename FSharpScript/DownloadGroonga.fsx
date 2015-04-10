@@ -12,10 +12,7 @@ let webcilent (address :String)(url: String) =
 let downLoadGroonga (groongaVer: String) =
     let url = String.Format("http://packages.groonga.org/source/groonga/groonga-{0}.zip", groongaVer)
     let saveFileName = String.Format("groonga-{0}.zip", groongaVer)
-    try
-        webcilent url saveFileName
-    with
-    | ex -> printfn "%s" ex.Message; ()
+    webcilent url saveFileName
 
 let version = "5.0.2"
 
