@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.9.18-x64-mingw32)
+    win32-eventlog (0.6.7)
+      ffi
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  win32-eventlog
+
+BUNDLED WITH
+   1.12.5
