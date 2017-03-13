@@ -40,7 +40,7 @@ end
 
 class FluentPluginEvtSvc
   def run
-    eventlog = EventLog.new()
+    eventlog = EventLog.new
     eventlog.info(65500, "Hi, from fluentd-plugins!! at " + Time.now.strftime("%Y/%m/%d %H:%M:%S "))
   end
 end
