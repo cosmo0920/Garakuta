@@ -35,7 +35,6 @@ class EventLog
       data: message
     )
   end
-
 end
 
 class FluentPluginEvtSvc
